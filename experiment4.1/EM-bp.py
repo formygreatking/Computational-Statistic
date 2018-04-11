@@ -54,22 +54,25 @@ def m_step(mu, sigma, expec, k, N):
     return alpha, mu, sigma
     
 if __name__ == '__main__':
-    mu = [16,10]
-    sigma = [2,6]
+    mu = [10,1]
+    sigma = [2,2]
     epsi = 1e-10
     k = 2
     N = 500
-    iter_n = 50
-    true_alpha = [0.3, 0.7]
+    iter_n = 200
+#    true_alpha = [0.3, 0.7]
     [X, mu, sigma, alpha, expec, ratio] = gen_data(mu, sigma, N)
     print(ratio)
     for i in range(iter_n):
         mu_old = copy.deepcopy(mu)
+        sigma_old = copy.deepcopy(sigma)
+        alpha_old = copy.deepcopy(alpha)
         expec = e_step(alpha, mu, sigma, k, N)
         [alpha, mu, sigma] = m_step(mu, sigma, expec, k, N)
         print(i, alpha, mu, sigma)
-#        diff = abs(mu - mu_old)
-#        if(diff.mean() < epsi):
-#            break;
+        diff_mu = abs(mu - mu_old)
+        diff_sigma = abs(sigma - sigma_old)
+        if(diff_mu.mean() < epsi) and (diff_sigma.mean() < epsi):
+            break;
     
     
