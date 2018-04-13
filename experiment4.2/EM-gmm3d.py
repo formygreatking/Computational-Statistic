@@ -19,8 +19,9 @@ def gen_data(mu_1, sigma_1, mu_2, sigma_2, N):
     return X, from_1/N    
        
 def e_step(mu, cov_1, cov_2, alpha, X, N):
-    ld_0 = stats.multivariate_normal.pdf(X, mu[0:], cov_1)
-    ld_1 = stats.multivariate_normal.pdf(X, mu[1:], cov_2)
+    print(mu[0,:])
+    ld_0 = stats.multivariate_normal.pdf(X, mu[0,:], cov_1)
+    ld_1 = stats.multivariate_normal.pdf(X, mu[1,:], cov_2)
     denom = np.hstack((ld_0, ld_1))
     denom = np.dot(alpha.T, denom.T) 
     numer = np.repeat(alpha.T, N, axis=0)
@@ -63,7 +64,7 @@ if __name__ == '__main__':
     #parameter initialion & data generation
     [X, ratio] = gen_data(mu1_true, sigma_1, mu2_true, sigma_2, N)
     alpha = np.matrix('0.5; 0.5')
-    mu = np.array([[X[:,0].mean()+1],[X[:,1].mean()+1],[X[:,0].mean()-1],[X[:,1].mean()-1]])
+    mu = np.array([[[X[:,0].mean()+1],[X[:,1].mean()+1]],[[X[:,0].mean()-1],[X[:,1].mean()-1]]])
     mu = np.matrix(mu)
     sigma_1 = np.random.random((2,2))
     sigma_1 = np.matrix(sigma_1)
