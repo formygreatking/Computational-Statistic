@@ -60,6 +60,8 @@ if __name__ == '__main__':
     lamb = np.random.random((2,1))
     lamb = np.matrix(lamb)
     expec = np.random.random((N,2)) 
+    err_1 = []
+    err_2 = []
 #    true_alpha = [0.3, 0.7]
     [X, ratio] = gen_data(lamb_true[0], lamb_true[1], N)
     print(ratio)
@@ -70,8 +72,25 @@ if __name__ == '__main__':
         [alpha, lamb] = m_step(lamb, expec, N)
         print(i, alpha, lamb)
         diff_lamb = abs(lamb - lamb_old)
+        er1 = abs(lamb[0]-5)
+        er1 = np.array(er1[0])
+        er1 = er1.tolist()
+        er2 = abs(lamb[1]-14)
+        er2 = np.array(er2[0])
+        er2 = er2.tolist()
+        err_1.append(er1[0])
+        err_2.append(er2[0])
         diff_alpha = abs(alpha - alpha_old)
         if(diff_alpha.mean() < epsi) and (diff_lamb.mean() < epsi):
             break;
     
+    x = list(range(i+1))
+    plt.figure(1)
+    plt.title('Result Analysis')
+    plt.xlabel('iteration times')
+    plt.ylabel('absolute error')
+    plt.plot(x, err_1, color = 'green', label='lambda_1')
+    plt.plot(x, err_2, color = 'red', label='lambda_2')
+    plt.legend()
+    plt.show()
     

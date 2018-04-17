@@ -52,13 +52,13 @@ def m_step(mu, sigma, expec, k, N):
     
 if __name__ == '__main__':
     mu_true = [10,15]
-    sigma = [5,13]
-    epsi = 1e-10
+    sigma_true = [5,2]
+    epsi = 1e-5
     k = 2
     N = 500
     iter_n = 500
     #parameter initialion & data generation
-    [X, ratio] = gen_data(mu_true, sigma, N)
+    [X, ratio] = gen_data(mu_true, sigma_true, N)
     alpha = [0.5, 0.5]
     mu = np.array([[X.mean()+1],[X.mean()-1]])
     mu = np.matrix(mu)
@@ -66,6 +66,10 @@ if __name__ == '__main__':
     sigma = np.matrix(sigma)
     expec = np.random.random((N,2)) 
     print(ratio)
+    err_mu1 = []
+    err_mu2 = []
+    err_sig1 = []
+    err_sig2 = []
     for i in range(iter_n):
         mu_old = copy.deepcopy(mu)
         sigma_old = copy.deepcopy(sigma)
@@ -75,7 +79,25 @@ if __name__ == '__main__':
         print(i, alpha, mu, sigma)
         diff_mu = abs(mu - mu_old)
         diff_sigma = abs(sigma - sigma_old)
+        ermu1 = np.array(abs(mu[0] - mu_true[0])).tolist()
+        ermu2 = np.array(abs(mu[1] - mu_true[1])).tolist()
+        ersig1 = np.array(abs(sigma[0] - sigma_true[0])).tolist()
+        ersig2 = np.array(abs(sigma[1] - sigma_true[1])).tolist()
+        err_mu1.append(ermu1[0])
+        err_mu2.append(ermu2[0])
+        err_sig1.append(ersig1[0])
+        err_sig2.append(ersig2[0])
         if(diff_mu.mean() < epsi) and (diff_sigma.mean() < epsi):
             break;
     
-    
+    x = list(range(i+1))
+    plt.figure(1)
+    plt.title('Result Analysis')
+    plt.xlabel('iteration times')
+    plt.ylabel('absolute error')
+    plt.plot(x, err_mu1, color = 'green', label='mu_1')
+    plt.plot(x, err_mu2, color = 'red', label='mu_2')
+    plt.plot(x, err_sig1, color = 'blue', label='sigma_1')
+    plt.plot(x, err_sig2, color = 'black', label='sigma_2')
+    plt.legend()
+    plt.show()
