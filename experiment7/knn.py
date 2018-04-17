@@ -31,21 +31,29 @@ if __name__=='__main__':
     boston = load_boston()
     ind = list(range(506))
     ind_train = random.sample(ind, 350)
-    train = []
-    train_tar = []
-    test = []
-    test_tar = []
-    k = 5
-    for i in range(506):
-        if i in ind_train:
-            train.append(boston.data[i,:])
-            train_tar.append(boston.target[i])
-        else:
-            test.append(boston.data[i,:])
-            test_tar.append(boston.target[i])
-    y_pri = knn(test, train, train_tar, k)
-    test_tar = np.array(test_tar)
-    y_pri = np.array(y_pri)
-    err = abs(y_pri-test_tar)
-    err_mean = err.sum()/len(err)
+    err_mean = []
+    K = list(range(1,10))
+    for k in K:
+        train = []
+        train_tar = []
+        test = []
+        test_tar = []
+        for i in range(506):
+            if i in ind_train:
+                train.append(boston.data[i,:])
+                train_tar.append(boston.target[i])
+            else:
+                test.append(boston.data[i,:])
+                test_tar.append(boston.target[i])
+        y_pri = knn(test, train, train_tar, k)
+        test_tar = np.array(test_tar)
+        y_pri = np.array(y_pri)
+        err = abs(y_pri-test_tar)
+        err_mean.append(err.sum()/len(err))
     print(err_mean)
+    plt.figure(1)
+    plt.plot(K, err_mean, color='red')
+    plt.title('Result Analysis')
+    plt.xlabel('Number of k')
+    plt.ylabel('error mean')
+    plt.show()

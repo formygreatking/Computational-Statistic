@@ -9,25 +9,33 @@ def gen_data(mu, sigma, N):
 if __name__ == '__main__':
     mu = 2
     sigma = 4
-    N = 100
-    X = gen_data(mu, sigma, N)
-    iter_max = 1000
-    mu_est = []
-    sig_est = []
+    N = list(range(100,1100,100))
     err_mu = []
     err_sig = []
-    for i in range(iter_max):
-        resample = []
-        for j in range(N):
-            ind = np.random.randint(0,N)
-            resample.append(X[ind])
-        resample = np.array(resample)
+    for n in N:
+        X = gen_data(mu, sigma, n)
+        iter_max = 1000
+        mu_est = []
+        sig_est = []
+        for i in range(iter_max):
+            resample = []
+            for j in range(n):
+                ind = np.random.randint(0,n)
+                resample.append(X[ind])
+            resample = np.array(resample)
         mu_est.append(resample.mean())
         sig_est.append(resample.std())
-    
-#    x = list(range(iter_max))
-#    plt.plot(x, err_mu, '-', color = 'green')
-#    plt.plot(x, err_sig, '-', color='red')
-    mu_est = np.array(mu_est)
-    sig_est = np.array(sig_est)
-    print(mu_est.mean(), sig_est.mean())
+        mu_est = np.array(mu_est)
+        sig_est = np.array(sig_est)
+        err_mu.append(abs(mu_est.mean() - mu))
+        err_sig.append(abs(sig_est.mean() - sigma))
+        print(abs(mu_est.mean() - mu), abs(sig_est.mean()- sigma))
+        
+    plt.figure(1)
+    plt.title('Result Analysis')
+    plt.xlabel('Number of examples')
+    plt.ylabel('absolute error')
+    plt.plot(N, err_mu, color='green', label='mean')
+    plt.plot(N, err_sig, color='red', label='sigma')
+    plt.legend()
+    plt.show()
